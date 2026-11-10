@@ -356,6 +356,16 @@ class GravityExperimentPage extends StatefulWidget {
 }
 class _GravityExperimentPageState extends State<GravityExperimentPage> {
   double height = 20;
+  String? prediction;
+  bool revealed = false;
+
+  String get correctRange {
+    final seconds = math.sqrt(2 * height / 9.81);
+    if (seconds < 1) return 'Under 1 second';
+    if (seconds <= 3) return '1–3 seconds';
+    return 'Over 3 seconds';
+  }
+
   @override
   Widget build(BuildContext context) {
     final time = math.sqrt(2 * height / 9.81);
@@ -371,6 +381,42 @@ class _GravityExperimentPageState extends State<GravityExperimentPage> {
         const Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [Text('1 m', style: TextStyle(color: C.muted, fontSize: 10)), Text('100 m', style: TextStyle(color: C.muted, fontSize: 10))]),
       ])),
       const SizedBox(height: 16),
+      Container(
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(color: C.panel, borderRadius: BorderRadius.circular(20), border: Border.all(color: C.line)),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const Text('MAKE A PREDICTION', style: TextStyle(color: C.cyan, fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 1.3)),
+          const SizedBox(height: 8),
+          const Text('How long do you think the object will take to fall?', style: TextStyle(color: C.white, fontSize: 14, fontWeight: FontWeight.w700)),
+          const SizedBox(height: 12),
+          Wrap(spacing: 8, runSpacing: 8, children: [
+            'Under 1 second', '1–3 seconds', 'Over 3 seconds'
+          ].map((option) => ChoiceChip(
+            label: Text(option),
+            selected: prediction == option,
+            onSelected: revealed ? null : (_) => setState(() => prediction = option),
+            selectedColor: C.blue.withValues(alpha: .28),
+            backgroundColor: C.panel2,
+            labelStyle: TextStyle(color: prediction == option ? C.white : C.muted, fontSize: 11),
+            side: BorderSide(color: prediction == option ? C.blue : C.line),
+          )).toList()),
+          const SizedBox(height: 12),
+          SizedBox(width: double.infinity, child: FilledButton(
+            onPressed: prediction == null ? null : () => setState(() => revealed = true),
+            child: Text(revealed ? 'Prediction checked' : 'Check my prediction'),
+          )),
+          if (revealed) ...[
+            const SizedBox(height: 12),
+            Text(prediction == correctRange ? 'That’s right! Great prediction.' : 'Good try! The correct range is $correctRange.',
+              style: TextStyle(color: prediction == correctRange ? C.mint : C.cyan, fontWeight: FontWeight.w700, fontSize: 12)),
+            const SizedBox(height: 5),
+            Text('The calculated fall time is ${time.toStringAsFixed(2)} seconds in this simplified model.',
+              style: const TextStyle(color: C.muted, fontSize: 11, height: 1.4)),
+            TextButton(onPressed: () => setState(() { prediction = null; revealed = false; }), child: const Text('Try again')),
+          ],
+        ]),
+      ),
+      const SizedBox(height: 16),
       Row(children: [
         Expanded(child: _MetricCard(label: 'FALL TIME', value: '${time.toStringAsFixed(2)} s', icon: Icons.timer_outlined)),
         const SizedBox(width: 12), Expanded(child: _MetricCard(label: 'FINAL SPEED', value: '${speed.toStringAsFixed(1)} m/s', icon: Icons.speed_rounded)),
@@ -383,7 +429,7 @@ class _GravityExperimentPageState extends State<GravityExperimentPage> {
         SizedBox(height: 12), Text('Try doubling the height. Does the fall time also double? Change the slider and observe the relationship.', style: TextStyle(color: C.white, fontSize: 12, height: 1.5)),
       ])),
       const SizedBox(height: 18),
-      OutlinedButton.icon(onPressed: () => setState(() => height = 20), icon: const Icon(Icons.restart_alt_rounded), label: const Text('Reset experiment'), style: OutlinedButton.styleFrom(foregroundColor: C.cyan, side: const BorderSide(color: C.line), padding: const EdgeInsets.symmetric(vertical: 14))),
+      OutlinedButton.icon(onPressed: () => setState(() { height = 20; prediction = null; revealed = false; }), icon: const Icon(Icons.restart_alt_rounded), label: const Text('Reset experiment'), style: OutlinedButton.styleFrom(foregroundColor: C.cyan, side: const BorderSide(color: C.line), padding: const EdgeInsets.symmetric(vertical: 14))),
     ]));
   }
 }
