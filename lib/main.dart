@@ -97,7 +97,7 @@ class HomePage extends StatelessWidget {
           const SizedBox(height: 14),
           SubjectGrid(onTap: onExplore),
           const SizedBox(height: 28),
-          DailyCard(),
+          const DailyCard(),
           const SizedBox(height: 18),
           LabBanner(onTap: onLab),
         ])),
@@ -320,7 +320,7 @@ class ExplorePage extends StatelessWidget {
 
 class _FeatureTile extends StatelessWidget {
   final IconData icon; final Color color; final String label, title, detail; final VoidCallback? onTap;
-  const _FeatureTile({super.key, required this.icon, required this.color, required this.label, required this.title, required this.detail, this.onTap});
+  const _FeatureTile({required this.icon, required this.color, required this.label, required this.title, required this.detail, this.onTap});
   @override
   Widget build(BuildContext context) => Material(color: C.panel, borderRadius: BorderRadius.circular(18), child: InkWell(onTap: onTap, borderRadius: BorderRadius.circular(18), child: Container(padding: const EdgeInsets.all(17), decoration: BoxDecoration(borderRadius: BorderRadius.circular(18), border: Border.all(color: C.line)), child: Row(children: [
     Container(width: 48, height: 48, decoration: BoxDecoration(color: color.withValues(alpha: .12), borderRadius: BorderRadius.circular(14)), child: Icon(icon, color: color, size: 25)),
