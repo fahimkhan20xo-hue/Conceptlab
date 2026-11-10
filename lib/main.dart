@@ -377,7 +377,7 @@ class _GravityExperimentPageState extends State<GravityExperimentPage> {
       const SizedBox(height: 25),
       Container(padding: const EdgeInsets.all(20), decoration: BoxDecoration(color: C.panel, borderRadius: BorderRadius.circular(20), border: Border.all(color: C.line)), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [const Expanded(child: Text('Drop height', style: TextStyle(color: C.white, fontWeight: FontWeight.w700))), Text('${height.toStringAsFixed(0)} m', style: const TextStyle(color: C.cyan, fontSize: 18, fontWeight: FontWeight.w800))]),
-        Slider(value: height, min: 1, max: 100, divisions: 99, activeColor: C.blue, inactiveColor: C.line, onChanged: (v) => setState(() => height = v)),
+        Slider(value: height, min: 1, max: 100, divisions: 99, activeColor: C.blue, inactiveColor: C.line, onChanged: (v) => setState(() { height = v; prediction = null; revealed = false; })),
         const Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [Text('1 m', style: TextStyle(color: C.muted, fontSize: 10)), Text('100 m', style: TextStyle(color: C.muted, fontSize: 10))]),
       ])),
       const SizedBox(height: 16),
