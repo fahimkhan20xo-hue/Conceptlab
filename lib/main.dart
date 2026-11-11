@@ -86,7 +86,9 @@ class HomePage extends StatelessWidget {
           const Eyebrow('YOUR CURIOSITY, UNLOCKED'),
           const SizedBox(height: 10),
           const Text('Discover how the\nworld works.', style: TextStyle(color: C.white, fontSize: 34, height: 1.08, fontWeight: FontWeight.w800, letterSpacing: -1.1)),
-          const SizedBox(height: 22),
+          const SizedBox(height: 8),
+          const Text('Explore  ·  Experiment  ·  Learn', style: TextStyle(color: C.muted, fontSize: 12, letterSpacing: .35)),
+          const SizedBox(height: 20),
           PremiumHero(onTap: onExplore),
           const SizedBox(height: 30),
           SectionTitle(title: 'Pick up where you left off', action: 'View all', onTap: onLearn),
@@ -97,7 +99,7 @@ class HomePage extends StatelessWidget {
           const SizedBox(height: 14),
           SubjectGrid(onTap: onExplore),
           const SizedBox(height: 28),
-          const DailyCard(),
+          DailyCard(onTap: () => _showDailyDiscovery(context)),
           const SizedBox(height: 18),
           LabBanner(onTap: onLab),
         ])),
@@ -114,14 +116,16 @@ class BrandHeader extends StatelessWidget {
       borderRadius: BorderRadius.circular(14),
       gradient: const LinearGradient(colors: [C.blue, C.cyan], begin: Alignment.bottomLeft, end: Alignment.topRight),
       boxShadow: [BoxShadow(color: C.blue.withValues(alpha: .25), blurRadius: 18, spreadRadius: 1)],
-    ), child: const Icon(Icons.hub_rounded, color: Colors.white, size: 25)),
+    ), child: const Icon(Icons.scatter_plot_rounded, color: Colors.white, size: 27)),
     const SizedBox(width: 12),
     const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text('CONCEPTLAB', style: TextStyle(color: C.white, fontSize: 16, fontWeight: FontWeight.w800, letterSpacing: 1.7)),
       SizedBox(height: 3),
       Text('UNDERSTAND. EXPERIMENT. DISCOVER.', style: TextStyle(color: C.muted, fontSize: 8.5, letterSpacing: .9)),
     ])),
-    IconButton(onPressed: () => _message(context, 'Notifications are coming soon.'), icon: const Icon(Icons.notifications_none_rounded, color: C.muted, size: 25)),
+    IconButton(onPressed: () => _message(context, 'You are all caught up. New discoveries will appear here.'), icon: const Icon(Icons.notifications_none_rounded, color: C.muted, size: 25)),
+    const SizedBox(width: 2),
+    const CircleAvatar(radius: 17, backgroundColor: Color(0xFF123B68), child: Icon(Icons.person_rounded, color: C.cyan, size: 20)),
   ]);
 }
 
@@ -137,7 +141,7 @@ class PremiumHero extends StatelessWidget {
   const PremiumHero({super.key, required this.onTap});
   @override
   Widget build(BuildContext context) => Container(
-    height: 250, clipBehavior: Clip.antiAlias,
+    height: 300, clipBehavior: Clip.antiAlias,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(25),
       border: Border.all(color: C.line),
@@ -145,7 +149,8 @@ class PremiumHero extends StatelessWidget {
       boxShadow: [BoxShadow(color: C.blue.withValues(alpha: .08), blurRadius: 28, offset: const Offset(0, 12))],
     ),
     child: Stack(children: [
-      const Positioned(right: -15, top: -5, bottom: -5, width: 225, child: EnergyCore()),
+      const Positioned(right: -32, top: 2, bottom: 0, width: 270, child: EnergyCore()),
+      Positioned.fill(child: IgnorePointer(child: CustomPaint(painter: HeroStarPainter()))),
       Positioned(left: 20, top: 23, bottom: 20, child: SizedBox(width: 205, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Container(padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5), decoration: BoxDecoration(color: C.blue.withValues(alpha: .16), borderRadius: BorderRadius.circular(20), border: Border.all(color: C.blue.withValues(alpha: .3))), child: const Text('THE WORLD IS YOUR LAB', style: TextStyle(color: C.cyan, fontSize: 8, letterSpacing: 1.1, fontWeight: FontWeight.w800))),
         const SizedBox(height: 14),
@@ -201,6 +206,42 @@ class CorePainter extends CustomPainter {
   bool shouldRepaint(covariant CorePainter oldDelegate) => oldDelegate.t != t;
 }
 
+class HeroStarPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final glow = Paint()..shader = RadialGradient(colors: [C.blue.withValues(alpha: .12), Colors.transparent]).createShader(Rect.fromCircle(center: Offset(size.width * .8, size.height * .48), radius: size.width * .55));
+    canvas.drawRect(Offset.zero & size, glow);
+    for (int i = 0; i < 42; i++) {
+      final x = ((i * 73) % 997) / 997 * size.width;
+      final y = ((i * 137) % 991) / 991 * size.height;
+      canvas.drawCircle(Offset(x, y), i % 7 == 0 ? 1.5 : .7, Paint()..color = (i % 5 == 0 ? C.violet : C.cyan).withValues(alpha: i % 4 == 0 ? .62 : .24));
+    }
+  }
+  @override
+  bool shouldRepaint(covariant HeroStarPainter oldDelegate) => false;
+}
+
+void _showDailyDiscovery(BuildContext context) {
+  showModalBottomSheet<void>(
+    context: context, backgroundColor: C.panel, isScrollControlled: true,
+    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+    builder: (context) => Padding(
+      padding: const EdgeInsets.fromLTRB(22, 24, 22, 32),
+      child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+        const Icon(Icons.wb_twilight_rounded, color: C.cyan, size: 34),
+        const SizedBox(height: 14),
+        const Text('WHY SUNSETS LOOK ORANGE', style: TextStyle(color: C.cyan, fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 1.4)),
+        const SizedBox(height: 10),
+        const Text('Sunlight contains many colours. At sunset, light travels through more of Earth’s atmosphere. Shorter blue wavelengths are scattered away more strongly, so more red and orange light reaches your eyes directly.', style: TextStyle(color: C.white, fontSize: 14, height: 1.55)),
+        const SizedBox(height: 14),
+        const Text('Try this: compare the colour of the sky near midday with its colour close to sunset. The changing path through the atmosphere makes the difference.', style: TextStyle(color: C.muted, fontSize: 12, height: 1.5)),
+        const SizedBox(height: 18),
+        SizedBox(width: double.infinity, child: FilledButton(onPressed: () => Navigator.pop(context), child: const Text('Got it'))),
+      ]),
+    ),
+  );
+}
+
 class SectionTitle extends StatelessWidget {
   final String title, action;
   final VoidCallback onTap;
@@ -221,7 +262,7 @@ class ContinueCard extends StatelessWidget {
     child: InkWell(onTap: onTap, borderRadius: BorderRadius.circular(19), child: Container(
       padding: const EdgeInsets.all(16), decoration: BoxDecoration(borderRadius: BorderRadius.circular(19), border: Border.all(color: C.line)),
       child: Row(children: [
-        Container(width: 58, height: 62, decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), gradient: LinearGradient(colors: [C.blue.withValues(alpha: .24), C.cyan.withValues(alpha: .08)])), child: const Icon(Icons.public_rounded, color: C.cyan, size: 30)),
+        Container(width: 76, height: 76, decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), gradient: const LinearGradient(begin: Alignment.bottomLeft, end: Alignment.topRight, colors: [Color(0xFF062B62), Color(0xFF0A75C8), Color(0xFF071A38)])), child: Stack(alignment: Alignment.center, children: [const Positioned(bottom: 8, left: 8, child: Icon(Icons.public_rounded, color: C.cyan, size: 49)), Positioned(top: 8, right: 8, child: Icon(Icons.apple_rounded, color: Colors.redAccent, size: 18)), const Positioned(bottom: 7, right: 15, child: Icon(Icons.south_rounded, color: C.mint, size: 18))])),
         const SizedBox(width: 14),
         const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text('PHYSICS  /  FUNDAMENTALS', style: TextStyle(color: C.cyan, fontSize: 9, fontWeight: FontWeight.w800, letterSpacing: 1)),
@@ -230,7 +271,7 @@ class ContinueCard extends StatelessWidget {
           SizedBox(height: 10),
           ClipRRect(borderRadius: BorderRadius.all(Radius.circular(8)), child: LinearProgressIndicator(value: .35, minHeight: 5, backgroundColor: C.line, valueColor: AlwaysStoppedAnimation(C.blue))),
           SizedBox(height: 6),
-          Text('Ready for your first experiment', style: TextStyle(color: C.muted, fontSize: 10)),
+          Text('70% completed  ·  2 of 3 lessons', style: TextStyle(color: C.muted, fontSize: 10)),
         ])),
         const SizedBox(width: 7), const Icon(Icons.arrow_forward_ios_rounded, color: C.muted, size: 15),
       ]),
@@ -242,15 +283,15 @@ class SubjectGrid extends StatelessWidget {
   final VoidCallback onTap;
   const SubjectGrid({super.key, required this.onTap});
   static const items = [
-    ('Physics', Icons.bolt_rounded, C.cyan, '12 concepts'),
-    ('Chemistry', Icons.science_rounded, C.mint, 'Coming soon'),
-    ('Biology', Icons.biotech_rounded, C.violet, 'Coming soon'),
-    ('Mathematics', Icons.functions_rounded, Color(0xFFFFC477), 'Coming soon'),
+    ('Physics', Icons.bolt_rounded, C.cyan, 'Learning path available'),
+    ('Chemistry', Icons.science_rounded, C.mint, 'Explore foundations'),
+    ('Biology', Icons.biotech_rounded, C.violet, 'Explore life sciences'),
+    ('Mathematics', Icons.functions_rounded, Color(0xFFFFC477), 'Explore patterns'),
   ];
   @override
   Widget build(BuildContext context) => GridView.builder(
     shrinkWrap: true, physics: const NeverScrollableScrollPhysics(), itemCount: items.length,
-    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 12, mainAxisSpacing: 12, childAspectRatio: 1.85),
+    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 12, mainAxisSpacing: 12, childAspectRatio: 1.48),
     itemBuilder: (_, i) { final item = items[i]; return Material(color: C.panel, borderRadius: BorderRadius.circular(17), child: InkWell(onTap: onTap, borderRadius: BorderRadius.circular(17), child: Container(
       padding: const EdgeInsets.all(14), decoration: BoxDecoration(borderRadius: BorderRadius.circular(17), border: Border.all(color: C.line)),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -263,16 +304,28 @@ class SubjectGrid extends StatelessWidget {
 }
 
 class DailyCard extends StatelessWidget {
-  const DailyCard({super.key});
+  final VoidCallback onTap;
+  const DailyCard({super.key, required this.onTap});
   @override
-  Widget build(BuildContext context) => Container(padding: const EdgeInsets.all(17), decoration: BoxDecoration(borderRadius: BorderRadius.circular(18), gradient: const LinearGradient(colors: [Color(0xFF112E4D), Color(0xFF0B1D33)]), border: Border.all(color: C.line)), child: const Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-    Icon(Icons.auto_awesome_rounded, color: C.cyan, size: 24), SizedBox(width: 12),
-    Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text('DAILY DISCOVERY', style: TextStyle(color: C.cyan, fontSize: 9, letterSpacing: 1.5, fontWeight: FontWeight.w800)),
-      SizedBox(height: 7), Text('Why does the sky change colour at sunset?', style: TextStyle(color: C.white, fontSize: 14, height: 1.35, fontWeight: FontWeight.w700)),
-      SizedBox(height: 5), Text('A new question to spark your curiosity.', style: TextStyle(color: C.muted, fontSize: 10)),
-    ])),
-  ]));
+  Widget build(BuildContext context) => Material(
+    color: C.panel, borderRadius: BorderRadius.circular(19),
+    child: InkWell(onTap: onTap, borderRadius: BorderRadius.circular(19), child: Container(
+      padding: const EdgeInsets.all(17),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(19), gradient: const LinearGradient(colors: [Color(0xFF102F50), Color(0xFF0A1B30)]), border: Border.all(color: C.line)),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        Container(width: 68, height: 68, decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), gradient: const RadialGradient(colors: [Color(0xFF155A9B), Color(0xFF081A31)])), child: const Icon(Icons.wb_twilight_rounded, color: C.cyan, size: 42)),
+        const SizedBox(width: 13),
+        const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text('DAILY DISCOVERY  ·  NEW', style: TextStyle(color: C.cyan, fontSize: 8, letterSpacing: 1, fontWeight: FontWeight.w800)),
+          SizedBox(height: 7),
+          Text('Why does the sky turn orange at sunset?', style: TextStyle(color: C.white, fontSize: 13, height: 1.3, fontWeight: FontWeight.w700)),
+          SizedBox(height: 5),
+          Text('Explore the science behind the colours.', style: TextStyle(color: C.muted, fontSize: 10, height: 1.35)),
+        ])),
+        const SizedBox(width: 6), const Icon(Icons.arrow_forward_rounded, color: C.cyan, size: 18),
+      ]),
+    )),
+  );
 }
 
 class LabBanner extends StatelessWidget {
